@@ -2,15 +2,9 @@ import asyncio
 import sqlite3
 import random
 from aiogram import Bot, Dispatcher, F
-from aiogram.types import Message, InlineKeyboardMarkup, InlineKeyboardButton
+from aiogram.types import Message, InlineKeyboardMarkup, InlineKeyboardButton, WebAppInfo
 from aiogram.filters import CommandStart, Command
 from aiogram.exceptions import TelegramAPIError
-import sqlite3
-import random
-from aiogram import Bot, Dispatcher, F
-from aiogram.types import Message, InlineKeyboardMarkup, InlineKeyboardButton, CallbackQuery
-from aiogram.filters import CommandStart, Command
-from aiogram.exceptions import TelegramBadRequest
 
 # ==========================================
 # 1. НАСТРОЙКИ (ОБЯЗАТЕЛЬНО ЗАПОЛНИ!)
@@ -193,7 +187,10 @@ async def cmd_start_ref(message: Message, command: CommandStart):
 @dp.message(CommandStart())
 async def cmd_start(message: Message):
     get_user(message.from_user.id)
-    await message.answer("Привет! Напиши /zadaniya, чтобы начать зарабатывать звёзды, или /crash и /mines, чтобы играть!")
+    keyboard = InlineKeyboardMarkup(inline_keyboard=[
+    [InlineKeyboardButton(text="🎮 Открыть игры", web_app=WebAppInfo(url="https://tg-bot-gp5z.onrender.com/index.html"))]
+])
+    await message.answer("Привет! Напиши /zadaniya, чтобы начать зарабатывать звёзды, или /crash и /mines, чтобы играть!", reply_markup=keyboard)
 
 @dp.message(Command("zadaniya"))
 async def cmd_zadaniya(message: Message):
