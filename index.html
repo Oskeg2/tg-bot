@@ -1,3 +1,47 @@
+[12.11.2026 13:56] 🫪: <!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <script src="https://telegram.org/js/telegram-web-app.js"></script>
+    <style>
+        body { background: #17212b; color: white; font-family: sans-serif; text-align: center; padding: 20px; }
+        button { padding: 15px; font-size: 18px; width: 100%; margin-top: 20px; background: #2ea6ff; color: white; border: none; border-radius: 10px; }
+    </style>
+</head>
+<body>
+    <h1>Тест</h1>
+    <div id="balance">Баланс загружается...</div>
+    <button onclick="alert('Кнопка работает!')">Нажми меня</button>
+
+    <script>
+        let tg = window.Telegram.WebApp;
+        tg.expand();
+        let userId = tg.initDataUnsafe?.user?.id;
+
+        document.getElementById('balance').innerText = "Твой ID: " + userId;
+
+        fetch(/api/balance/${userId})
+            .then(res => res.json())
+            .then(data => {
+                document.getElementById('balance').innerText = "Баланс: " + data.stars + " звезд";
+            })
+            .catch(err => {
+                document.getElementById('balance').innerText = "Ошибка загрузки баланса";
+            });
+    </script>
+</body>
+</html>
+[12.11.2026 14:03] 🫪: fetch(/api/balance/${userId})
+    .then(res => {
+        if (!res.ok) throw new Error("Статус " + res.status);
+        return res.json();
+    })
+    .then(data => {
+        document.getElementById('balance').innerText = "Баланс: " + data.stars + " звезд";
+    })
+    .catch(err => {
+        document.getElementById('balance').innerText = "ОШИБКА: " + err.message;
+    });
 [12.11.2026 14:35] 🫪: <!DOCTYPE html>
 <html lang="ru">
 <head>
