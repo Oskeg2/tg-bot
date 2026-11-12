@@ -780,8 +780,6 @@ app = Flask(__name__, static_folder='.')
 def serve_html():
     return send_from_directory('.', 'index.html')
 
-threading.Thread(target=lambda: app.run(host='0.0.0.0', port=10000), daemon=True).start()
-
 # ... (код Flask выше)
 @app.route('/api/balance/<int:user_id>')
 def get_balance(user_id):
@@ -795,10 +793,3 @@ def get_balance(user_id):
     if row:
         return {"stars": row[0]}
     return {"stars": 0}
-
-async def main():
-    print("бот запущен...")
-    await dp.start_polling(bot)
-
-if __name__ == "__main__":
-    asyncio.run(main())
