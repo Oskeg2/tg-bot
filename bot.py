@@ -774,22 +774,30 @@ async def mines_cashout(callback: CallbackQuery):
 
 from flask import Flask, send_from_directory
 import threading
+import os
 
 app = Flask(__name__, static_folder='.')
+
 @app.route('/index.html')
 def serve_html():
     return send_from_directory('.', 'index.html')
 
-# ... (код Flask выше)
 @app.route('/api/balance/<int:user_id>')
 def get_balance(user_id):
-    # Подключаемся к базе
     conn = sqlite3.connect("users.db")
     cursor = conn.cursor()
     cursor.execute("SELECT stars FROM users WHERE user_id = ?", (user_id,))
     row = cursor.fetchone()
     conn.close()
-    
-    if row:
-        return {"stars": row[0]}
-    return {"stars": 0}
+    return {"stars": row[0] if row else 0}
+
+# Запускаем Flask на порту, который требует Render (или 8080)
+port = int(os.environ.get("PORT", 8080))
+threading.Thread(target=lambda: app.run(host='0.0.0.0', port=port), daemon=True).start()
+
+async def main():
+    print("Бот запущен...")
+    await dp.start_polling(bot)
+
+if __name__ == "__main__":
+    asyncio.run(main())
