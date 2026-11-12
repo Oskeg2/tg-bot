@@ -17,7 +17,6 @@
         .btn-cases { background-color: #ffa502; }
         .btn-back { background-color: #555; margin-bottom: 20px; padding: 10px; font-size: 14px; }
 
-        /* Стили для Сапёра */
         .grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 10px; max-width: 300px; margin: 0 auto; }
         .cell { background-color: #2b5278; height: 60px; border-radius: 10px; display: flex; align-items: center; justify-content: center; font-size: 24px; cursor: pointer; user-select: none; }
         .cell.opened { background-color: #243b53; }
@@ -27,27 +26,22 @@
 </head>
 <body>
 
-    <!-- ЭКРАН 1: ГЛАВНОЕ МЕНЮ -->
     <div id="menu-screen" class="screen active">
         <h1>Мой Магазин</h1>
-        <div class="balance">Звёзды: 0 ⭐ | Тоны: 0 💎</div>
+        <div class="balance" id="balance-text">Звёзды: 0 ⭐ | Тоны: 0 💎</div>
         <button class="btn btn-mines" onclick="openMines()">💣 Сапёр</button>
         <button class="btn btn-roulette">🎰 Рулетка</button>
         <button class="btn btn-cases">📦 Кейсы</button>
     </div>
 
-    <!-- ЭКРАН 2: ИГРА САПЁР -->
     <div id="mines-screen" class="screen">
         <button class="btn btn-back" onclick="backToMenu()">← Назад в меню</button>
         <h2>Сапёр 4x4</h2>
         <p>Найди все звёзды!</p>
-        <div class="grid" id="mines-grid">
-            <!-- Клетки будут созданы через JS -->
-        </div>
+        <div class="grid" id="mines-grid"></div>
     </div>
 
     <script>
-        // Инициализация Telegram WebApp
         let tg = window.Telegram.WebApp;
         tg.expand(); 
         
@@ -58,14 +52,13 @@
             try {
                 let res = await fetch(/api/balance/${userId});
                 let data = await res.json();
-                document.querySelector('.balance').innerHTML = Звёзды: ${data.stars} ⭐ | Тоны: 0 💎;
+                document.getElementById('balance-text').innerHTML = Звёзды: ${data.stars} ⭐ | Тоны: 0 💎;
             } catch (e) {
                 console.log("Ошибка загрузки баланса", e);
             }
         }
         loadBalance();
 
-        // Логика переключения экранов
         function openMines() {
             document.getElementById('menu-screen').classList.remove('active');
             document.getElementById('mines-screen').classList.add('active');
@@ -77,7 +70,6 @@
             document.getElementById('menu-screen').classList.add('active');
         }
 
-        // Логика генерации поля Сапёра
         function generateMinesGrid() {
             const grid = document.getElementById('mines-grid');
             grid.innerHTML = ''; 
@@ -89,12 +81,15 @@
                 
                 cell.onclick = function() {
                     if (cell.classList.contains('opened')) return; 
+                    
+                    let isMine = Math.random() < 0.15; 
+                    
                     cell.classList.add('opened');
                     if (isMine) {
                         cell.classList.add('mine');
                         cell.innerText = '💣';
                         alert("Ты попал на мину! Игра окончена.");
-                    } else {
+                        } else {
                         cell.classList.add('star');
                         cell.innerText = '⭐';
                     }
@@ -105,5 +100,3 @@
     </script>
 </body>
 </html>
-                    
-                    let isMine = Math.random() < 0.15;
