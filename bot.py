@@ -9,7 +9,7 @@ from aiogram.exceptions import TelegramAPIError, TelegramBadRequest
 # ==========================================
 # 1. НАСТРОЙКИ (ОБЯЗАТЕЛЬНО ЗАПОЛНИ!)
 # ==========================================
-BOT_TOKEN = "TOKEN" # ЗАМЕНИ НА СВОЙ ТОКЕН
+BOT_TOKEN = "129817893:AAHfn0_fhF-wv4V3Wkp8JMKNEHsdgjnX1RU" # ЗАМЕНИ НА СВОЙ ТОКЕН
 BOT_LINK = "https://t.me/Oskegup" # ЗАМЕНИ НА ССЫЛКУ СВОЕГО БОТА (без @)
 ADMIN_ID = 8441441176 # ЗАМЕНИ НА СВОЙ ЦИФРОВОЙ ID (узнать у @userinfobot)
 ADMIN_USERNAME = "oskeg" # ТВОЙ ЮЗЕРНЕЙМ БЕЗ @
