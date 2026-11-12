@@ -782,6 +782,20 @@ def serve_html():
 
 threading.Thread(target=lambda: app.run(host='0.0.0.0', port=10000), daemon=True).start()
 
+# ... (код Flask выше)
+@app.route('/api/balance/<int:user_id>')
+def get_balance(user_id):
+    # Подключаемся к базе
+    conn = sqlite3.connect("users.db")
+    cursor = conn.cursor()
+    cursor.execute("SELECT stars FROM users WHERE user_id = ?", (user_id,))
+    row = cursor.fetchone()
+    conn.close()
+    
+    if row:
+        return {"stars": row[0]}
+    return {"stars": 0}
+
 async def main():
     print("бот запущен...")
     await dp.start_polling(bot)
