@@ -1,36 +1,60 @@
 <!DOCTYPE html>
-<html>
+<html lang="ru">
 <head>
     <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>OskegUp App</title>
     <script src="https://telegram.org/js/telegram-web-app.js"></script>
     <style>
-        body { background: #17212b; color: white; font-family: sans-serif; text-align: center; padding: 20px; }
-        button { padding: 15px; font-size: 18px; width: 100%; margin-top: 20px; background: #2ea6ff; color: white; border: none; border-radius: 10px; }
+        body { background-color: #17212b; color: white; font-family: sans-serif; text-align: center; padding: 20px; margin: 0; }
+        .balance { font-size: 24px; margin: 20px; }
+        .btn { display: block; width: 100%; padding: 15px; margin: 10px 0; border-radius: 10px; border: none; font-size: 18px; color: white; cursor: pointer; font-weight: bold; }
+        .btn-mines { background-color: #2ea6ff; }
+        .btn-crash { background-color: #ff4757; }
+        .btn-roulette { background-color: #ffa502; }
+        .btn-cases { background-color: #9b59b6; }
     </style>
 </head>
 <body>
-    <h1>Тест</h1>
-    <div id="balance">Баланс загружается...</div>
-    <button onclick="alert('Кнопка работает!')">Нажми меня</button>
+
+    <h1>Мой Магазин</h1>
+    <div class="balance" id="balance-text">Звёзды: Загрузка... ⭐</div>
+    
+    <button class="btn btn-mines" onclick="sendGameCommand('mines')">💣 Сапёр</button>
+    <button class="btn btn-crash" onclick="sendGameCommand('crash')">🚀 Краш / Ракета</button>
+    <button class="btn btn-roulette" onclick="sendGameCommand('roulette')">🎰 Рулетка</button>
+    <button class="btn btn-cases" onclick="sendGameCommand('cases')">📦 Кейсы</button>
 
     <script>
         let tg = window.Telegram.WebApp;
-        tg.expand();
-        let userId = tg.initDataUnsafe?.user?.id;
+        tg.expand(); 
+        
+        let userId = tg.initDataUnsafe?.user?.id || 0;
 
-        document.getElementById('balance').innerText = "Твой ID: " + userId;
+        // Загрузка баланса
+        async function loadBalance() {
+            if (!userId) return;
+            try {
+                let res = await fetch(https://tg-bot-gp5z.onrender.com/api/balance/${userId});
+                let data = await res.json();
+                document.getElementById('balance-text').innerHTML = Звёзды: ${data.stars} ⭐ | Тоны: 0 💎;
+            } catch (e) {
+                document.getElementById('balance-text').innerHTML = Ошибка сети;
+            }
+        }
+        loadBalance();
 
-        fetch(/api/balance/${userId})
-    .then(res => {
-        if (!res.ok) throw new Error("Статус " + res.status);
-        return res.json();
-    })
-    .then(data => {
-        document.getElementById('balance').innerText = "Баланс: " + data.stars + " звезд";
-    })
-    .catch(err => {
-        document.getElementById('balance').innerText = "ОШИБКА: " + err.message;
-    });
+        // Функция для отправки команды боту, когда нажимаешь на кнопку в Mini App
+        function sendGameCommand(gameName) {
+            // Закрываем Mini App
+            tg.close(); 
+            
+            // Отправляем боту команду через API Telegram (он пришлет сообщение в чат)
+            // ВАЖНО: чтобы это работало, бот должен быть запущен
+            fetch(https://tg-bot-gp5z.onrender.com/api/play/${userId}/${gameName})
+                .then(() => console.log("Команда отправлена"))
+                .catch(e => console.log(e));
+        }
     </script>
 </body>
 </html>
