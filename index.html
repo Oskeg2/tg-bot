@@ -7,23 +7,41 @@
     <script src="https://telegram.org/js/telegram-web-app.js"></script>
     <style>
         body { background-color: #17212b; color: white; font-family: sans-serif; text-align: center; padding: 20px; margin: 0; }
-        .balance { font-size: 24px; margin: 20px; }
+        .screen { display: none; }
+        .active { display: block; }
+        .balance { font-size: 24px; margin: 20px; color: #ffa502; }
         .btn { display: block; width: 100%; padding: 15px; margin: 10px 0; border-radius: 10px; border: none; font-size: 18px; color: white; cursor: pointer; font-weight: bold; }
         .btn-mines { background-color: #2ea6ff; }
         .btn-crash { background-color: #ff4757; }
         .btn-roulette { background-color: #ffa502; }
         .btn-cases { background-color: #9b59b6; }
+        .btn-back { background-color: #555; margin-bottom: 20px; padding: 10px; font-size: 14px; }
+        
+        .grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 10px; max-width: 300px; margin: 0 auto; margin-top: 20px; }
+        .cell { background-color: #2b5278; height: 60px; border-radius: 10px; display: flex; align-items: center; justify-content: center; font-size: 24px; cursor: pointer; user-select: none; }
+        .cell.opened { background-color: #243b53; }
+        .cell.mine { background-color: #ff4757; }
+        .cell.star { background-color: #ffa502; }
     </style>
 </head>
 <body>
 
-    <h1>Мой Магазин</h1>
-    <div class="balance" id="balance-text">Звёзды: Загрузка... ⭐</div>
-    
-    <button class="btn btn-mines" onclick="sendGameCommand('mines')">💣 Сапёр</button>
-    <button class="btn btn-crash" onclick="sendGameCommand('crash')">🚀 Краш / Ракета</button>
-    <button class="btn btn-roulette" onclick="sendGameCommand('roulette')">🎰 Рулетка</button>
-    <button class="btn btn-cases" onclick="sendGameCommand('cases')">📦 Кейсы</button>
+    <!-- ЭКРАН 1: МЕНЮ -->
+    <div id="menu-screen" class="screen active">
+        <h1>Мой Магазин</h1>
+        <div class="balance" id="balance-text">Звёзды: Загрузка... ⭐</div>
+        <button class="btn btn-mines" onclick="openMines()">💣 Сапёр</button>
+        <button class="btn btn-crash" onclick="alert('Краш скоро появится!')">🚀 Краш / Ракета</button>
+        <button class="btn btn-roulette" onclick="alert('Рулетка скоро появится!')">🎰 Рулетка</button>
+        <button class="btn btn-cases" onclick="alert('Кейсы скоро появятся!')">📦 Кейсы</button>
+    </div>
+
+    <!-- ЭКРАН 2: САПЁР -->
+    <div id="mines-screen" class="screen">
+        <button class="btn btn-back" onclick="backToMenu()">← Назад в меню</button>
+        <h2>Сапёр 4x4</h2>
+        <div class="grid" id="mines-grid"></div>
+    </div>
 
     <script>
         let tg = window.Telegram.WebApp;
@@ -31,7 +49,7 @@
         
         let userId = tg.initDataUnsafe?.user?.id || 0;
 
-        // Загрузка баланса
+        // 1. Загрузка баланса
         async function loadBalance() {
             if (!userId) return;
             try {
@@ -39,21 +57,46 @@
                 let data = await res.json();
                 document.getElementById('balance-text').innerHTML = Звёзды: ${data.stars} ⭐ | Тоны: 0 💎;
             } catch (e) {
-                document.getElementById('balance-text').innerHTML = Ошибка сети;
+                document.getElementById('balance-text').innerHTML = Звёзды: Ошибка сети ⭐;
             }
         }
         loadBalance();
 
-        // Функция для отправки команды боту, когда нажимаешь на кнопку в Mini App
-        function sendGameCommand(gameName) {
-            // Закрываем Mini App
-            tg.close(); 
-            
-            // Отправляем боту команду через API Telegram (он пришлет сообщение в чат)
-            // ВАЖНО: чтобы это работало, бот должен быть запущен
-            fetch(https://tg-bot-gp5z.onrender.com/api/play/${userId}/${gameName})
-                .then(() => console.log("Команда отправлена"))
-                .catch(e => console.log(e));
+        // 2. Переключение экранов
+        function openMines() {
+            document.getElementById('menu-screen').classList.remove('active');
+            document.getElementById('mines-screen').classList.add('active');
+            generateMinesGrid();
+        }
+
+        function backToMenu() {
+            document.getElementById('mines-screen').classList.remove('active');
+            document.getElementById('menu-screen').classList.add('active');
+        }
+
+        // 3. Логика Сапёра
+        function generateMinesGrid() {
+            const grid = document.getElementById('mines-grid');
+            grid.innerHTML = ''; 
+            for (let i = 0; i < 16; i++) {
+                const cell = document.createElement('div');
+                cell.className = 'cell';
+                cell.innerText = '';
+                cell.onclick = function() {
+                    if (cell.classList.contains('opened')) return; 
+                    let isMine = Math.random() < 0.15; 
+                    cell.classList.add('opened');
+                    if (isMine) {
+                        cell.classList.add('mine');
+                        cell.innerText = '💣';
+                        alert("Ты попал на мину!");
+                    } else {
+                        cell.classList.add('star');
+                        cell.innerText = '⭐';
+                    }
+                };
+                grid.appendChild(cell);
+            }
         }
     </script>
 </body>
