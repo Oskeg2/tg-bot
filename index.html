@@ -21,13 +21,16 @@
         document.getElementById('balance').innerText = "Твой ID: " + userId;
 
         fetch(/api/balance/${userId})
-            .then(res => res.json())
-            .then(data => {
-                document.getElementById('balance').innerText = "Баланс: " + data.stars + " звезд";
-            })
-            .catch(err => {
-                document.getElementById('balance').innerText = "Ошибка загрузки баланса";
-            });
+    .then(res => {
+        if (!res.ok) throw new Error("Статус " + res.status);
+        return res.json();
+    })
+    .then(data => {
+        document.getElementById('balance').innerText = "Баланс: " + data.stars + " звезд";
+    })
+    .catch(err => {
+        document.getElementById('balance').innerText = "ОШИБКА: " + err.message;
+    });
     </script>
 </body>
 </html>
