@@ -16,13 +16,13 @@ from aiogram.exceptions import TelegramBadRequest
 # 1. НАСТРОЙКИ (ОБЯЗАТЕЛЬНО ЗАПОЛНИ!)
 # ==========================================
 BOT_TOKEN = "9129817893:AAHfn0_fhF-wv4V3Wkp8JMKNEHsdgjnX1RU" # ЗАМЕНИ НА СВОЙ ТОКЕН
-BOT_LINK = "https://t.me/Oskegupа" # ЗАМЕНИ НА ССЫЛКУ СВОЕГО БОТА (без @)
+BOT_LINK = "https://t.me/Oskegup" # ЗАМЕНИ НА ССЫЛКУ СВОЕГО БОТА (без @)
 ADMIN_ID = 8441441176 # ЗАМЕНИ НА СВОЙ ЦИФРОВОЙ ID (узнать у @userinfobot)
 ADMIN_USERNAME = "oskeg" # ТВОЙ ЮЗЕРНЕЙМ БЕЗ @
 
 MIN_WITHDRAW = 15.0
 MIN_BET = 10.0
-MAX_BET = 2000.0
+MAX_BET = 20000000.0
 
 CHANNELS = [
     {"id": "ch1", "username": "@Rubupdemo", "title": "Rubupdemo"},
@@ -249,7 +249,7 @@ async def cmd_ref(message: Message):
     invited_count = cursor.fetchone()[0]
     conn.close()
 
-    ref_link = f"{BOT_LINK}?start={user_id}"
+    ref_link = f"{"https://t.me/Oskegup"}?start={user_id}"
     text = (
         f"🤝 <b>Партнерская программа</b>\n\n"
         f"🔗 <b>Твоя ссылка для приглашения:</b>\n"
@@ -423,7 +423,7 @@ async def mines_open(callback: CallbackQuery):
     mines_count = mines.count("mine")
 
     # Защита от повторного нажатия
-    if mines[cell_index] == "opened_star":
+    if mines[cell_index] == "star":
         await callback.answer("Эта клетка уже открыта!", show_alert=True)
         return
 
