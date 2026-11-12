@@ -772,6 +772,16 @@ async def mines_cashout(callback: CallbackQuery):
     await callback.answer(f"✅ Ты забрал {winnings:.0f} ⭐!", show_alert=True)
     await callback.message.delete()
 
+from flask import Flask, send_from_directory
+import threading
+
+app = Flask(__name__, static_folder='.')
+@app.route('/index.html')
+def serve_html():
+    return send_from_directory('.', 'index.html')
+
+threading.Thread(target=lambda: app.run(host='0.0.0.0', port=10000), daemon=True).start()
+
 async def main():
     print("бот запущен...")
     await dp.start_polling(bot)
